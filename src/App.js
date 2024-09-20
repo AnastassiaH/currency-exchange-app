@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import CurrencyRow from "./components/CurrencyRow";
-import { Container } from "@mui/material";
+import { CircularProgress, Container, Box, Typography } from "@mui/material";
+import Header from "./components/Header";
 
 const BASE_URL = "https://v6.exchangerate-api.com/v6/";
 
@@ -15,6 +16,8 @@ function App() {
   const [exchangeRate, setExchangeRate] = useState();
   const [amount, setAmount] = useState(1);
   const [amountInFromCurrency, setAmountInFromCurrency] = useState(true);
+  const [USDRate, setUSDRate] = useState();
+  const [EURRate, setEURRate] = useState();
 
   useEffect(() => {
     setIsLoading(true);
@@ -23,7 +26,13 @@ function App() {
       .then((data) => {
         console.log(data);
         setCurrencyOptions([...Object.keys(data.conversion_rates)]);
-      });
+        setUSDRate(data.conversion_rates.USD);
+        setEURRate(data.conversion_rates.EUR);
+      })
+      .catch((error) => {
+        setError(error.message);
+      })
+      .finally(() => setIsLoading(false));
   }, []);
 
   let toAmount, fromAmount;
@@ -59,39 +68,51 @@ function App() {
     setAmountInFromCurrency(false);
   }
 
+  if (isLoading) {
+    return <CircularProgress color="inherit" />;
+  }
+
   return (
-    <Container
-      maxWidth="lg"
+    <Box
       className="App"
       sx={{
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
+        height: "100vh",
       }}
     >
-      {isLoading ? (
-        <>Loading...</>
-      ) : (
-        <>
-          <CurrencyRow
-            currencyOptions={currencyOptions}
-            selectedCurrency={fromCurrency}
-            onChangeCurrency={(e) => setFromCurrency(e.target.value)}
-            amount={fromAmount}
-            onChangeAmount={handleFromAmountChange}
-          />
-          =
-          <CurrencyRow
-            currencyOptions={currencyOptions}
-            selectedCurrency={toCurrency}
-            onChangeCurrency={(e) => setToCurrency(e.target.value)}
-            amount={toAmount}
-            onChangeAmount={handleToAmountChange}
-          />
-        </>
-      )}
-    </Container>
+      <Header USDRate={USDRate} EURRate={EURRate} />
+      <Container
+        maxWidth="lg"
+        className="App"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          flexGrow: 1,
+        }}
+      >
+        <Typography variant="h1" fontSize="32px" mb="30px">
+          Currency Converter
+        </Typography>
+        <CurrencyRow
+          currencyOptions={currencyOptions}
+          selectedCurrency={fromCurrency}
+          onChangeCurrency={(e) => setFromCurrency(e.target.value)}
+          amount={fromAmount}
+          onChangeAmount={handleFromAmountChange}
+        />
+        <Typography sx={{ fontSize: "24px" }}>=</Typography>
+        <CurrencyRow
+          currencyOptions={currencyOptions}
+          selectedCurrency={toCurrency}
+          onChangeCurrency={(e) => setToCurrency(e.target.value)}
+          amount={toAmount}
+          onChangeAmount={handleToAmountChange}
+        />
+      </Container>
+    </Box>
   );
 }
 
