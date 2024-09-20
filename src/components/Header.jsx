@@ -1,4 +1,4 @@
-import { Box, Grow, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 const Header = ({ USDRate, EURRate }) => {
   return (

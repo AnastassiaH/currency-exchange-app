@@ -24,10 +24,9 @@ function App() {
     fetch(`${BASE_URL}/${apiKey}/latest/UAH`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setCurrencyOptions([...Object.keys(data.conversion_rates)]);
         setUSDRate((1 / data.conversion_rates.USD).toFixed(2));
-        setEURRate((1 / data.conversion_rates.EUR.toFixed(2)));
+        setEURRate((1 / data.conversion_rates.EUR).toFixed(2));
       })
       .catch((error) => {
         setError(error.message);
