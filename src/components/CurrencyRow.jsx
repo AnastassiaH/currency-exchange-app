@@ -1,4 +1,4 @@
-import { Box, MenuItem, Select, TextField } from "@mui/material";
+import { Box, MenuItem, Select, TextField } from '@mui/material';
 
 const CurrencyRow = ({
   currencyOptions,
@@ -8,30 +8,11 @@ const CurrencyRow = ({
   onChangeAmount,
 }) => {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <TextField
-        sx={{ border: "2px solid #595959" }}
-        type="number"
-        value={amount}
-        onChange={onChangeAmount}
-      />
-      <Select
-        value={selectedCurrency}
-        onChange={onChangeCurrency}
-        sx={{
-          width: 100,
-          marginLeft: 2,
-          border: "2px solid #595959"
-        }}
-      >
-        {currencyOptions.map((option) => (
-          <MenuItem key={option} value={option}>
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
+      <TextField label="Amount" type="number" value={amount ?? ''} onChange={onChangeAmount} sx={{ flex: '1 0 65%' }} />
+      <Select label={<>Currency</>} value={selectedCurrency ?? ''} onChange={onChangeCurrency} sx={{ minWidth: '25%' }}>
+        {currencyOptions?.map((option) => (
+          <MenuItem key={`${option}-key-option`} value={option}>
             {option}
           </MenuItem>
         ))}
